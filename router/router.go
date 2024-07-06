@@ -15,10 +15,10 @@ func InitRouter() *gin.Engine {
 	r.Static("/static", "./static")
 	// 分组
 	bg := r.Group("/douyin")
-	// 注册
-	bg.POST("/user/register/", middleware.SHA, user_login.UserRegisterHandler)
 	// 登录
 	bg.POST("/user/login/", middleware.SHA, user_login.UserLoginHandler)
+	// 注册
+	bg.POST("/user/register/", middleware.SHA, user_login.UserRegisterHandler)
 	// 发布视频
 	bg.POST("/publish/action/", middleware.JWT, video.PublishVideoHandler)
 	// 推流

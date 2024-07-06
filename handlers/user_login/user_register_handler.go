@@ -1,7 +1,27 @@
 package user_login
 
-import "github.com/gin-gonic/gin"
+import (
+	"My_douyin/models"
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
+// 注册回复
+type UserRegisterResponse struct {
+	models.BaseResponse
+}
 
 func UserRegisterHandler(c *gin.Context) {
+	username := c.Query("username")
+	//password, ok := c.Get("password")
+	_, ok := c.Get("password")
+	if len(username) == 0 || ok == false {
+		c.JSON(http.StatusOK, UserRegisterResponse{
+			BaseResponse: models.BaseResponse{
+				StatusCode: 1,
+				StatusMsg:  "username or password error",
+			},
+		})
+	}
 
 }

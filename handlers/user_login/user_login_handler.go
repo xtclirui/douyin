@@ -15,6 +15,7 @@ type UserLoginResponse struct {
 	models.BaseResponse
 	// 用户id
 	// 用户鉴权token
+	// 通过service调用models获取
 	*service.QLoginResponse
 }
 

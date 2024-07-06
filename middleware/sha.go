@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 符合最小权限原则：服务端加密密码后，即使服务端被入侵，攻击者也无法直接获取用户的明文密码。
+// 密码存储安全：服务端需要存储用户密码的哈希值而不是明文密码
+// 确保即使数据库被盗，攻击者也无法轻易破解出原始密码
+
 func SHA(c *gin.Context) {
 	password := c.Query("password")
 	if password == "" {

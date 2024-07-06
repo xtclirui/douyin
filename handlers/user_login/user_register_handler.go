@@ -7,6 +7,7 @@ import (
 )
 
 // 注册回复
+
 type UserRegisterResponse struct {
 	models.BaseResponse
 }

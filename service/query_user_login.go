@@ -42,6 +42,7 @@ func (sq *ServiceQLoginResponse) Do() (*QLoginResponse, error) {
 	return sq.data, nil
 }
 
+// 检查username 和 password
 func (sq *ServiceQLoginResponse) checkFormat() error {
 	if sq.username == "" {
 		return errors.New("空用户名")

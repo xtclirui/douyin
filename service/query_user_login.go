@@ -1,11 +1,18 @@
 package service
 
+import (
+	"My_douyin/middleware"
+	"My_douyin/models"
+	"errors"
+)
+
+// QLoginResponse 用户id 用户鉴权token
 type QLoginResponse struct {
 	Userid int64  `json:"userid"`
 	Token  string `json:"token"`
 }
 
-type Service_QLoginResponse struct {
+type ServiceQLoginResponse struct {
 	username string
 	password string
 	data     *QLoginResponse
@@ -13,15 +20,63 @@ type Service_QLoginResponse struct {
 	token    string
 }
 
-func New_Service_QLoginResponse(username string, password string) *Service_QLoginResponse {
-	return &Service_QLoginResponse{username: username, password: password}
-}
-
-func (sq *Service_QLoginResponse) Do() (*QLoginResponse, error) {
-	return nil, nil
-}
-
 func QueryUserLogin(username string, password string) (*QLoginResponse, error) {
-	s_qLoginResponse := New_Service_QLoginResponse(username, password)
-	return s_qLoginResponse.Do()
+	sQLoginResponse := NewServiceQloginresponse(username, password)
+	return sQLoginResponse.Do()
+}
+
+func NewServiceQloginresponse(username string, password string) *ServiceQLoginResponse {
+	return &ServiceQLoginResponse{username: username, password: password}
+}
+
+func (sq *ServiceQLoginResponse) Do() (*QLoginResponse, error) {
+	if err := sq.checkFormat(); err != nil {
+		return nil, err
+	}
+	if err := sq.findData(); err != nil {
+		return nil, err
+	}
+	if err := sq.fillData(); err != nil {
+		return nil, err
+	}
+	return sq.data, nil
+}
+
+func (sq *ServiceQLoginResponse) checkFormat() error {
+	if sq.username == "" {
+		return errors.New("空用户名")
+	}
+	if len(sq.username) > 100 {
+		return errors.New("用户名长度超出限制")
+	}
+	if sq.password == "" {
+		return errors.New("空密码为")
+	}
+	return nil
+}
+
+func (sq *ServiceQLoginResponse) findData() error {
+	userloginDAO := models.NewUserLoginDao()
+	var login models.UserLogin
+	err := userloginDAO.DirectQueryUserLogin(sq.username, sq.password, &login)
+	if err != nil {
+		return err
+	}
+	sq.userid = login.UserInfoId
+
+	// 生成token
+	token, err := middleware.ReleaseToken(login)
+	if err != nil {
+		return err
+	}
+	sq.token = token
+	return nil
+}
+
+func (sq *ServiceQLoginResponse) fillData() error {
+	sq.data = &QLoginResponse{
+		Userid: sq.userid,
+		Token:  sq.token,
+	}
+	return nil
 }

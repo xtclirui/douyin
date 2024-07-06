@@ -2,7 +2,7 @@ package user_login
 
 import (
 	"My_douyin/models"
-	"My_douyin/service"
+	"My_douyin/service/user_login"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,7 +16,7 @@ type UserLoginResponse struct {
 	// 用户id
 	// 用户鉴权token
 	// 通过service调用models获取
-	*service.QLoginResponse
+	*user_login.QLoginResponse
 }
 
 func UserLoginHandler(c *gin.Context) {
@@ -34,7 +34,7 @@ func UserLoginHandler(c *gin.Context) {
 
 	// 2. 通过用户名查询user实体，判断用户名是否存在
 	// type QLoginResponse struct, err
-	qloginresponse, err := service.QueryUserLogin(username, password.(string))
+	qloginresponse, err := user_login.QueryUserLogin(username, password.(string))
 
 	// 用户不存在
 	if err != nil {

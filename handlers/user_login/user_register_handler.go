@@ -9,22 +9,29 @@ import (
 
 // 注册回复
 
-type UserRegisterResponse struct {
+type RegisterResponse struct {
 	models.BaseResponse
-	*user_login.QLoginResponse
+	*user_login.QRegisterResponse
 }
 
 func UserRegisterHandler(c *gin.Context) {
 	username := c.Query("username")
-	//password, ok := c.Get("password")
-	_, ok := c.Get("password")
-	if len(username) == 0 || ok == false {
-		c.JSON(http.StatusOK, UserRegisterResponse{
+	password, _ := c.Get("password")
+
+	registerResponse, err := user_login.PostUserLogin(username, password.(string))
+	if err != nil {
+		c.JSON(http.StatusOK, RegisterResponse{
 			BaseResponse: models.BaseResponse{
 				StatusCode: 1,
-				StatusMsg:  "username or password error",
+				StatusMsg:  err.Error(),
 			},
 		})
+		return
 	}
-
+	c.JSON(http.StatusOK, RegisterResponse{
+		BaseResponse: models.BaseResponse{
+			StatusCode: 0,
+		},
+		QRegisterResponse: registerResponse,
+	})
 }

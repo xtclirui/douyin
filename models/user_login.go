@@ -36,3 +36,12 @@ func (mu *UserLoginDAO) DirectQueryUserLogin(username, password string, login *U
 	}
 	return nil
 }
+
+func (mu *UserLoginDAO) UserExitByUSerName(usename string) bool {
+	var userLogin UserLogin
+	DB.Where("username=?", usename).First(&userLogin)
+	if userLogin.Id == 0 {
+		return false
+	}
+	return true
+}

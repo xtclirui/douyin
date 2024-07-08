@@ -9,7 +9,7 @@ import (
 
 // 返回值
 
-type UserLoginResponse struct {
+type LoginResponse struct {
 	// 状态码
 	// 状态码描述
 	models.BaseResponse
@@ -38,7 +38,7 @@ func UserLoginHandler(c *gin.Context) {
 
 	// 用户不存在
 	if err != nil {
-		c.JSON(http.StatusOK, UserLoginResponse{
+		c.JSON(http.StatusOK, LoginResponse{
 			BaseResponse: models.BaseResponse{
 				StatusCode: 1,
 				StatusMsg:  err.Error(),
@@ -48,7 +48,7 @@ func UserLoginHandler(c *gin.Context) {
 
 	// 3. 通过user实体，对密码进行加密后，与数据库中密码比对，是否一致
 	// 用户存在,返回相应的id和token
-	c.JSON(http.StatusOK, UserLoginResponse{
+	c.JSON(http.StatusOK, LoginResponse{
 		BaseResponse: models.BaseResponse{
 			StatusCode: 0,
 		},
